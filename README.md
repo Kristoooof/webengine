@@ -16,7 +16,7 @@ ADHD-barát, magyar nyelvű kurzus. Nulláról, saját kézzel építesz egy bö
 
 ## Tartalom
 
-21 modul, 180 lecke, 5 felvonásban. Az első 27 lecke (Indulás, Rust alapok, Rozsda 0.1) teljesen kész. A többi modulonként érkezik. A leckék a [`content/lessons`](content/lessons) mappában vannak Markdownban, a tanmenet a [`content/curriculum.ts`](content/curriculum.ts) fájlban.
+21 modul, 181 lecke, 5 felvonásban. Az első 38 lecke (Indulás, Rust alapok, Rozsda 0.1, szabványkövető HTML-parser és DOM) teljesen kész. A többi modulonként érkezik. A leckék a [`content/lessons`](content/lessons) mappában vannak Markdownban, a tanmenet a [`content/curriculum.ts`](content/curriculum.ts) fájlban.
 
 ## Fejlesztés
 

@@ -1,6 +1,6 @@
 [package]
 name = "rozsda-kurzus"
-version = "0.1.0"
+version = "0.2.0"
 description = "Rozsda – építs saját böngészőmotort Rustban"
 edition = "2021"
 publish = false

@@ -87,7 +87,9 @@ function makeMarked(headings: Heading[]): Marked {
         const label = isTest ? "Teszt – ezt bemásolhatod" : title || LANG_LABEL[language] || language;
         const copyBtn = copyable
           ? `<button class="code-copy" type="button" aria-label="Másolás">${icon("copy", 14)}<span>Másolás</span></button>`
-          : `<span class="code-type" title="A megoldás-kódot érdemes begépelni: így tanul a kezed is.">${icon("pen", 13)}gépeld be</span>`;
+          : language === "text"
+            ? ""
+            : `<span class="code-type" title="A megoldás-kódot érdemes begépelni: így tanul a kezed is.">${icon("pen", 13)}gépeld be</span>`;
         return `<figure class="code ${isTest ? "code-test" : ""}" data-lang="${language}"><figcaption><span>${escapeHtml(label)}</span>${copyBtn}</figcaption><pre><code class="hljs language-${language}">${html}</code></pre></figure>`;
       },
       heading(this: { parser: { parseInline: (t: Tokens.Generic[]) => string } }, { tokens, depth }: Tokens.Heading): string {

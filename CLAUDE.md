@@ -41,7 +41,7 @@ Kódblokkok: a ` ```rust test ` blokk másolható tesztet jelent. A `bash`, `pow
 
 ## Architektúra (a tanuló `rozsda` repója, nem ez a repó)
 
-`rozsda/` Cargo workspace: `crates/rozsda-core` (közös típusok, traitek: `HtmlParser` stb., `Implementation { Own, Pro }`), `crates/rozsda-html`, `crates/rozsda-browser` (minifb ablak, `Canvas`, bitmap font8x8, `layout::Line` display list), és a `gyakorlo/` az 1. modulból. A 3. modulban a `Page`-et egy DOM (`Document`, arénás `NodeId`) váltja fel. A 6. modulban a minifb helyére winit + softbuffer jön.
+`rozsda/` Cargo workspace: `crates/rozsda-core` (közös típusok, traitek: `HtmlParser` stb., `Implementation { Own, Pro }`), `crates/rozsda-html`, `crates/rozsda-browser` (minifb ablak, `Canvas`, bitmap font8x8, `layout::Line` display list), és a `gyakorlo/` az 1. modulból. A 3. modul után: `rozsda-core::dom` (arénás `Document`, `NodeId`, `NodeData`, `dump()` html5lib formátumban), a `HtmlParser::parse` `Document`-et ad; `rozsda-html::lexer` (WHATWG-állapotgép, ~20 állapot) és `rozsda-html::tree_builder` (nyitott elemek verme, hatókör, implicit zárások, adoption agency nélkül); a browserben `flatten.rs` alakítja a DOM-ot a 0.1-es `Page` blokklistává, amíg az 5. modulban el nem készül az igazi layout; `--dom` kapcsoló. A 6. modulban a minifb helyére winit + softbuffer jön.
 
 ## Az alkalmazás
 
