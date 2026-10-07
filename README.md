@@ -13,6 +13,8 @@ ADHD-barát, magyar nyelvű kurzus. Nulláról, saját kézzel építesz egy bö
 - Fókusz-időzítő, Ötletparkoló, sorozat, XP, aktivitás-térkép
 - Lépcsőzetes tippek, elrejtett megoldás, ismétlőkártyák (Leitner-rendszer)
 - C#, C++ és Python összehasonlítások ott, ahol a Rust más
+- **Beépített kódolós feladatok:** a leckében írod meg a kódot, a kurzus lefordítja, sok bemenettel összeveti a mintamegoldással, és megméri a sebességét is. Nem a kód szövegét nézi, hanem azt, hogy ugyanazt csinálja-e
+- A kurzus megjegyzi, hol jártál a leckében, és ott folytatod
 
 ## Tartalom
 
@@ -24,6 +26,7 @@ ADHD-barát, magyar nyelvű kurzus. Nulláról, saját kézzel építesz egy bö
 npm install
 npm run dev          # webes változat: http://localhost:5173
 npm run check        # típusellenőrzés + leckék ellenőrzése
+npm run test:exercises  # a beépített feladatok ellenőrzése (rustc kell hozzá)
 npm run build        # statikus build a dist/ mappába
 npm run tauri dev    # asztali változat (Rust + Tauri kell hozzá)
 npm run tauri build  # asztali telepítő
@@ -34,13 +37,24 @@ npm run tauri build  # asztali telepítő
 - **Weboldal:** minden push automatikusan kikerül a GitHub Pages-re (`.github/workflows/pages.yml`).
 - **Asztali app:** egy `v*` tag pusholása (pl. `git tag v0.2.0 && git push --tags`), vagy az *Actions → Kiadás → Run workflow* gomb Windows-telepítőt, MSI-t és portable exe-t készít, és GitHub Release-be teszi (`.github/workflows/release.yml`).
 
+## A beépített feladatok
+
+Az asztali app a gépen lévő `rustc`-vel fordít (ha nincs, a Rust Playgroundot használja), a weboldal a [Rust Playgroundon](https://play.rust-lang.org) futtat. A bírálat:
+
+| Eredmény | Mikor |
+|---|---|
+| Helyes megoldás | minden eset egyezik, és legfeljebb 1,3× lassabb a mintánál |
+| Helyes, de van optimálisabb | minden eset egyezik, 1,3–2× lassabb; ilyenkor a kurzus elmagyarázza a mintát |
+| Nem jó megoldás | valamelyik eset eltér, vagy több mint 2× lassabb |
+
 ## Felépítés
 
 ```
 content/            a kurzus tartalma (tanmenet, leckék, fogalomtár)
 src/                a kurzus-alkalmazás (Vite + TypeScript, keretrendszer nélkül)
-  lib/              tárolás, markdown-renderelő, időzítő, ikonok
+  lib/              tárolás, markdown-renderelő, időzítő, ikonok,
+                    feladat-bíráló (harness.ts), futtató (runner.ts), szerkesztő (editor.ts)
   views/            kezdőlap, térkép, lecke, ismétlés, fogalomtár, beállítások
 src-tauri/          az asztali változat (Tauri 2)
-scripts/            tartalomellenőrző
+scripts/            tartalomellenőrző, feladat-tesztelő
 ```

@@ -7,7 +7,7 @@ A repó egy magyar nyelvű, ADHD-barát kurzus. A tanuló (Windows, inattentív 
 1. Nézd meg a `content/curriculum.ts` fájlban a modul leckéit (id, cím, perc). A címeket és a sorrendet módosíthatod, ha jobb lesz tőle, de az id-k formátuma `MM-LL` marad.
 2. Írd meg a leckéket `content/lessons/MM-LL.md` néven, a meglévő leckék stílusában (lásd lent).
 3. **Minden kódot ellenőrizz.** Építs egy referencia-crate-et a scratchpadben, amiben a leckék megoldásai *pontosan úgy* szerepelnek, ahogy a leckében, és futtasd le rajta a leckék tesztjeit (`cargo test`, `cargo clippy`). A checkpoint-kimeneteket valódi futásból másold.
-4. `npm run check` (típusellenőrzés + `scripts/check-content.mjs`), majd `npm run build`.
+4. `npm run check` (típusellenőrzés + `scripts/check-content.mjs`), `npm run test:exercises`, majd `npm run build`.
 5. Commit, push. A Pages magától frissül. Új asztali kiadáshoz: tag (`vX.Y.Z`) vagy a Kiadás workflow kézi indítása.
 
 ## A leckék formátuma
@@ -27,8 +27,13 @@ Markdown, plusz `:::típus [cím]` … `:::` blokkok (nem ágyazhatók egymásba
 | `why` | „Mélyvíz”: opcionális háttér, összecsukva |
 | `note`, `tip`, `warn`, `adhd`, `checkpoint` | Kiemelt dobozok |
 | `win`, `next` | A lecke végén: mit építettél, mi jön |
+| `exercise` | Beépített kódolós feladat (lásd lent) |
 
 Kódblokkok: a ` ```rust test ` blokk másolható tesztet jelent. A `bash`, `powershell`, `toml`, `json`, `html` és `css` is másolható. A sima ` ```rust ` blokkon „gépeld be” jelzés van, mert a megoldás-kódot a tanulónak be kell gépelnie.
+
+## Beépített feladatok (`:::exercise Cím`)
+
+A blokkon belül `@@ szakasz` sorok tagolnak: `feladat` (Markdown), `kód` (kezdő kód), `megoldás` (minta), `magyarázat` (akkor látszik, ha a tanulóé helyes, de 1,3–2× lassabb), `adott` (közös típusok, mindkét oldal látja), `esetek` (soronként egy Rust-kifejezés, `{:?}`-vel hasonlítjuk össze), `mérés` (előkészítés, `---`, mért kifejezés), `teszt-rossz` és `teszt-lassú` (csak a `npm run test:exercises` használja). A bíró a `src/lib/harness.ts`. A feladat a lecke utolsó `:::steps` blokkja elé kerül, „## Próbáld ki itt, a kurzusban” címmel. Új feladat után futtasd: `npm run test:exercises`.
 
 ## Stílus
 

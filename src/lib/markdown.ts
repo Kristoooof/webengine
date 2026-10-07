@@ -15,6 +15,7 @@ import cpp from "highlight.js/lib/languages/cpp";
 import python from "highlight.js/lib/languages/python";
 import { icon } from "./icons";
 import { registerCard, state } from "./store";
+import { parseExercise, type ExerciseSpec } from "./harness";
 
 hljs.registerLanguage("rust", rust);
 hljs.registerLanguage("toml", toml);
@@ -162,6 +163,7 @@ export interface Rendered {
   headings: Heading[];
   stepCount: number;
   quizCount: number;
+  exercises: ExerciseSpec[];
 }
 
 const CALLOUTS: Record<string, { icon: string; label: string }> = {
@@ -189,6 +191,7 @@ export function renderLesson(src: string, lessonId: string): Rendered {
   let hint = 0;
   let tabs = 0;
   const parts: string[] = [];
+  const exercises: ExerciseSpec[] = [];
 
   for (const seg of segments(src)) {
     if (seg.kind === "md") {
@@ -277,6 +280,31 @@ export function renderLesson(src: string, lessonId: string): Rendered {
       continue;
     }
 
+    if (type === "exercise") {
+      const spec = parseExercise(`${lessonId}#x${exercises.length}`, title, seg.body);
+      const saved = state.exercises[spec.id];
+      const solved = saved?.verdict === "correct" || saved?.verdict === "faster" || saved?.verdict === "slow-ok";
+      parts.push(
+        `<section class="exercise" data-ex="${exercises.length}">
+          <header class="ex-head">
+            <span class="ex-badge">${icon("code", 15)}<span>Kódolós feladat</span></span>
+            <strong class="ex-title">${escapeHtml(title || "Feladat")}</strong>
+            <span class="ex-status ${solved ? "solved" : ""}">${solved ? `${icon("check", 13)}<span>Megoldva</span>` : ""}</span>
+          </header>
+          <div class="ex-prompt">${parse(spec.prompt)}</div>
+          <div class="ex-editor"><pre class="ex-fallback">${escapeHtml(saved?.code ?? spec.starter)}</pre></div>
+          <div class="ex-toolbar">
+            <button type="button" class="btn btn-primary ex-run">${icon("play", 15)}<span>Futtatás és ellenőrzés</span></button>
+            <button type="button" class="btn btn-ghost ex-reset">${icon("review", 15)}<span>Visszaállítás</span></button>
+            <span class="ex-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
+          </div>
+          <div class="ex-result" aria-live="polite" hidden></div>
+        </section>`,
+      );
+      exercises.push(spec);
+      continue;
+    }
+
     if (type === "tabs" || type === "compare") {
       const t = tabs++;
       const chunks = seg.body.split(/^@@ /m).filter((c) => c.trim());
@@ -297,5 +325,5 @@ export function renderLesson(src: string, lessonId: string): Rendered {
     );
   }
 
-  return { html: parts.join("\n"), headings, stepCount: step, quizCount: quiz };
+  return { html: parts.join("\n"), headings, stepCount: step, quizCount: quiz, exercises };
 }

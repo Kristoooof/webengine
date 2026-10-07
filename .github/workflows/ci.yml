@@ -1,6 +1,8 @@
 name: Ellenőrzés
 
 on:
+  push:
+    branches: [main, "claude/**"]
   pull_request:
   workflow_dispatch:
 
@@ -16,6 +18,8 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run build
+      - name: Kódolós feladatok ellenőrzése valódi rustc-vel
+        run: npm run test:exercises
 
   desktop:
     runs-on: ubuntu-latest
@@ -33,3 +37,5 @@ jobs:
         run: |
           mkdir -p dist
           cargo check --manifest-path src-tauri/Cargo.toml
+      - name: A helyi Rust-futtató tesztjei
+        run: cargo test --manifest-path src-tauri/Cargo.toml

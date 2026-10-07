@@ -55,7 +55,7 @@ function refreshChrome(): void {
   const lv = levelFor(state.xp);
   document.getElementById("side-level")!.innerHTML = `
     ${ring(lv.into / lv.need, 40, 4, String(lv.level))}
-    <span><strong>${lv.title}</strong><small>${state.xp.toLocaleString("hu-HU")} XP · még ${(lv.need - lv.into).toLocaleString("hu-HU")} a szintlépésig</small></span>`;
+    <span><strong>${lv.title}</strong><small>${lv.into.toLocaleString("hu-HU")} / ${lv.need.toLocaleString("hu-HU")} XP a következő szintig</small></span>`;
   const due = dueCards().length;
   document.querySelectorAll<HTMLElement>('[data-badge="review"]').forEach((b) => {
     b.hidden = due === 0;

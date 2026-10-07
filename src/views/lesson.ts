@@ -4,6 +4,7 @@ import { escapeHtml, renderLesson } from "../lib/markdown";
 import { bumpActivity, completeLesson, isDone, save, state, toggleStep, uncompleteLesson } from "../lib/store";
 import { modal, ring, toast } from "../lib/ui";
 import type { Cleanup } from "../main";
+import { mountExercise } from "./exercise";
 
 function claudePrompt(id: string, title: string): string {
   return `A "Rozsda – böngészőmotor Rustban" kurzus ${id} leckéjénél tartok ("${title}").
@@ -309,15 +310,58 @@ export function renderLessonView(el: HTMLElement, id: string): Cleanup {
     window.dispatchEvent(new HashChangeEvent("hashchange"));
   });
 
-  // Olvasási sáv
+  // Kódolós feladatok
+  prose.querySelectorAll<HTMLElement>(".exercise").forEach((sec) => {
+    const spec = r.exercises[Number(sec.dataset.ex)];
+    if (spec) mountExercise(sec, spec);
+  });
+
+  // Olvasási sáv és a görgetési pozíció megjegyzése
   const bar = el.querySelector<HTMLElement>("#read-progress")!;
+  let scrollTimer = 0;
+  const rememberScroll = () => {
+    state.scroll[id] = Math.round(window.scrollY);
+    save(false);
+  };
   const onScroll = () => {
     const rect = prose.getBoundingClientRect();
     const total = rect.height - window.innerHeight * 0.6;
     const p = Math.max(0, Math.min(1, -rect.top / Math.max(1, total)));
     bar.style.transform = `scaleX(${p})`;
+    clearTimeout(scrollTimer);
+    scrollTimer = window.setTimeout(rememberScroll, 250);
   };
   window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-  return () => window.removeEventListener("scroll", onScroll);
+  window.addEventListener("pagehide", rememberScroll);
+
+  const saved = state.scroll[id] ?? 0;
+  if (saved > 300) {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: saved });
+      onScroll();
+      const pill = document.createElement("div");
+      pill.className = "resume-pill";
+      pill.innerHTML = `${icon("flag", 14)}<span>Ott folytatod, ahol abbahagytad</span><button type="button">${icon("arrow", 13)}<span>Az elejére</span></button>`;
+      pill.querySelector("button")!.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        pill.remove();
+      });
+      document.body.append(pill);
+      requestAnimationFrame(() => pill.classList.add("in"));
+      setTimeout(() => {
+        pill.classList.remove("in");
+        setTimeout(() => pill.remove(), 400);
+      }, 6000);
+    });
+  } else {
+    onScroll();
+  }
+
+  return () => {
+    clearTimeout(scrollTimer);
+    rememberScroll();
+    window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("pagehide", rememberScroll);
+    document.querySelectorAll(".resume-pill").forEach((p) => p.remove());
+  };
 }

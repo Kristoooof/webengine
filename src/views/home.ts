@@ -48,7 +48,8 @@ function heatmap(): string {
     }
     cols.push(`<div class="hm-col">${cells.join("")}</div>`);
   }
-  return `<div class="heatmap">${cols.join("")}</div>`;
+  const days = ["H", "", "Sze", "", "P", "", "V"].map((d) => `<span>${d}</span>`).join("");
+  return `<div class="heatmap-wrap"><div class="hm-days" aria-hidden="true">${days}</div><div class="heatmap">${cols.join("")}</div></div>`;
 }
 
 export function renderHome(el: HTMLElement): void {
@@ -57,7 +58,8 @@ export function renderHome(el: HTMLElement): void {
   const lv = levelFor(state.xp);
   const s = streak();
   const due = dueCards().length;
-  const tip = STARTER_TIPS[Math.floor(Date.now() / 86_400_000) % STARTER_TIPS.length];
+  let tipIndex = Math.floor(Date.now() / 86_400_000) % STARTER_TIPS.length;
+  const tip = STARTER_TIPS[tipIndex];
   const firstTime = Object.keys(state.completed).length === 0 && Object.keys(state.steps).length === 0;
 
   let hero: string;
@@ -148,7 +150,8 @@ export function renderHome(el: HTMLElement): void {
 
         <section class="panel tip-panel">
           <header class="panel-head"><h3>${icon("zap", 16)} Ha nehéz elkezdeni</h3></header>
-          <p>${tip}</p>
+          <p id="tip-text">${tip}</p>
+          <button type="button" class="btn btn-ghost tip-next" id="tip-next">${icon("review", 15)}<span>Másik tipp</span></button>
         </section>
 
         ${
@@ -170,6 +173,10 @@ export function renderHome(el: HTMLElement): void {
   el.querySelector("#five")?.addEventListener("click", () => {
     start("focus", 5);
     if (next) location.hash = `#/lecke/${next.id}`;
+  });
+  el.querySelector("#tip-next")?.addEventListener("click", () => {
+    tipIndex = (tipIndex + 1) % STARTER_TIPS.length;
+    el.querySelector("#tip-text")!.textContent = STARTER_TIPS[tipIndex];
   });
   const ta = el.querySelector<HTMLTextAreaElement>("#parking")!;
   let tmr = 0;

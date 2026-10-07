@@ -10,7 +10,7 @@ for (const m of curriculum.matchAll(/mod\("(\d\d)"[\s\S]*?\]\),/g)) {
   for (const l of m[0].matchAll(/\["(\d\d)", "/g)) ids.add(`${m[1]}-${l[1]}`);
 }
 
-const KNOWN = new Set(["goal", "note", "tip", "warn", "task", "checkpoint", "win", "next", "adhd", "compare", "steps", "quiz", "card", "hint", "solution", "why", "tabs"]);
+const KNOWN = new Set(["goal", "note", "tip", "warn", "task", "checkpoint", "win", "next", "adhd", "compare", "steps", "quiz", "card", "hint", "solution", "why", "tabs", "exercise"]);
 let errors = 0;
 const fail = (f, msg) => {
   errors++;

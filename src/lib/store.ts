@@ -26,6 +26,12 @@ export interface TimerState {
   totalMs: number;
 }
 
+export interface ExerciseState {
+  code: string;
+  verdict?: string;
+  solvedAt?: string;
+}
+
 export interface State {
   version: 1;
   completed: Record<string, string>;
@@ -38,6 +44,8 @@ export interface State {
   parking: string;
   cards: Record<string, CardState>;
   hintsUsed: Record<string, number>;
+  exercises: Record<string, ExerciseState>;
+  scroll: Record<string, number>;
   settings: Settings;
   timer: TimerState;
 }
@@ -57,6 +65,8 @@ function fresh(): State {
     parking: "",
     cards: {},
     hintsUsed: {},
+    exercises: {},
+    scroll: {},
     settings: { theme: "system", focusMinutes: 25, breakMinutes: 5, reduceMotion: false, sound: true },
     timer: { mode: "focus", endsAt: 0, pausedLeft: 0, totalMs: 0 },
   };

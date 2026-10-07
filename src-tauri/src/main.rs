@@ -1,6 +1,8 @@
 // Release módban ne nyíljon mellé konzolablak Windowson.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod runner;
+
 use std::path::PathBuf;
 use tauri::{WebviewUrl, WebviewWindowBuilder};
 
@@ -18,6 +20,7 @@ fn portable_data_dir() -> Option<PathBuf> {
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .invoke_handler(tauri::generate_handler![runner::run_rust])
         .setup(|app| {
             let mut window = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
                 .title("Rozsda – böngészőmotor Rustban")
