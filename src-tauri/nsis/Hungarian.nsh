@@ -1,4 +1,4 @@
-﻿LangString addOrReinstall ${LANG_HUNGARIAN} "Összetevők hozzáadása / újratelepítése"
+LangString addOrReinstall ${LANG_HUNGARIAN} "Összetevők hozzáadása / újratelepítése"
 LangString alreadyInstalled ${LANG_HUNGARIAN} "Már telepítve van"
 LangString alreadyInstalledLong ${LANG_HUNGARIAN} "A(z) ${PRODUCTNAME} ${VERSION} már telepítve van. Válaszd ki a kívánt műveletet, és kattints a Tovább gombra."
 LangString appRunning ${LANG_HUNGARIAN} "A(z) ${PRODUCTNAME} fut! Előbb zárd be, aztán próbáld újra."
