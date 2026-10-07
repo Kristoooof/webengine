@@ -1,0 +1,87 @@
+name: Kiadás (Windows telepítő + portable)
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Verziószám v előtag nélkül (pl. 0.1.0)"
+        required: true
+        default: "0.1.0"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+
+      - run: npm ci
+
+      - name: Verzió meghatározása
+        id: ver
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then V="${GITHUB_REF_NAME#v}"; else V="${{ inputs.version }}"; fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "tag=v$V" >> "$GITHUB_OUTPUT"
+
+      - name: Verzió beírása a konfigurációba
+        shell: bash
+        run: |
+          node -e "const fs=require('fs');const f='src-tauri/tauri.conf.json';const c=JSON.parse(fs.readFileSync(f,'utf8'));c.version='${{ steps.ver.outputs.version }}';fs.writeFileSync(f,JSON.stringify(c,null,2)+'\n')"
+
+      - name: Fordítás, telepítők és kiadás
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ steps.ver.outputs.tag }}
+          releaseName: "Rozsda Kurzus ${{ steps.ver.outputs.tag }}"
+          releaseDraft: false
+          prerelease: false
+          releaseBody: |
+            ## Rozsda – építs saját böngészőmotort Rustban
+
+            ADHD-barát, magyar nyelvű kurzus, nulláról a mai webig.
+
+            ### Melyiket töltsem le?
+
+            | Fájl | Mire jó |
+            |---|---|
+            | **`…_x64-setup.exe`** | **Ajánlott.** Telepítő: Start menü, asztali ikon, eltávolítható. Rendszergazdai jog nem kell. |
+            | `…_x64_en-US.msi` | Ugyanez MSI-csomagként (céges/iskolai gépekre). |
+            | **`Rozsda-Kurzus-…-portable.exe`** | **Hordozható.** Nem kell telepíteni, pendrive-ról is fut. A haladásod az exe melletti `Rozsda-adatok` mappába kerül. |
+
+            Windows 10 vagy 11 kell hozzá. A szükséges WebView2 a Windows része, ha mégis hiányzik, a telepítő letölti.
+
+            ### „A Windows megvédte a számítógépet”
+            A program nincs digitálisan aláírva (az aláíró tanúsítvány évi több száz dollár), ezért a SmartScreen figyelmeztethet. Kattints a **További információ**, majd a **Futtatás mindenképp** gombra.
+
+            ### A haladásod átvitele
+            A webes és az asztali változat külön tárolja a haladást. A **Beállítások → Haladás mentése** menüben exportálhatod és importálhatod.
+
+      - name: Portable változat feltöltése
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $v = "${{ steps.ver.outputs.version }}"
+          New-Item -ItemType Directory -Force portable | Out-Null
+          $name = "Rozsda-Kurzus-$v-portable.exe"
+          Copy-Item src-tauri/target/release/rozsda-kurzus.exe "portable/$name"
+          gh release upload "${{ steps.ver.outputs.tag }}" "portable/$name" --clobber

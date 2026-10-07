@@ -1,0 +1,31 @@
+{
+  "name": "rozsda-kurzus",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Rozsda – Építs saját böngészőmotort Rustban. ADHD-barát, magyar nyelvű kurzus.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "check": "tsc --noEmit && node scripts/check-content.mjs",
+    "tauri": "tauri"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kristoooof/webengine.git"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.3"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@tauri-apps/plugin-opener": "^2.7.0",
+    "highlight.js": "^11.12.0",
+    "marked": "^18.1.0"
+  }
+}
