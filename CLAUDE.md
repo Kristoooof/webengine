@@ -48,6 +48,12 @@ A blokkon belül `@@ szakasz` sorok tagolnak: `feladat` (Markdown), `kód` (kezd
 
 `rozsda/` Cargo workspace: `crates/rozsda-core` (közös típusok, traitek: `HtmlParser` stb., `Implementation { Own, Pro }`), `crates/rozsda-html`, `crates/rozsda-browser` (minifb ablak, `Canvas`, bitmap font8x8, `layout::Line` display list), és a `gyakorlo/` az 1. modulból. A 3. modul után: `rozsda-core::dom` (arénás `Document`, `NodeId`, `NodeData`, `dump()` html5lib formátumban), a `HtmlParser::parse` `Document`-et ad; `rozsda-html::lexer` (WHATWG-állapotgép, ~20 állapot) és `rozsda-html::tree_builder` (nyitott elemek verme, hatókör, implicit zárások, adoption agency nélkül); a browserben `flatten.rs` alakítja a DOM-ot a 0.1-es `Page` blokklistává, amíg az 5. modulban el nem készül az igazi layout; `--dom` kapcsoló. A 4. modul után: `crates/rozsda-css` (`tokenizer`, `selector` (parse, `Specificity`, jobbról balra illesztés), `parser` (`Stylesheet`/`Rule`/`Declaration`, az érték nyers `Vec<Token>`), `value` (`Value`, `Unit`), `cascade` (`Origin`, kulcs: (szint, inline, specificitás, sorrend), csak `display`, `color`, `background-color`, `font-size`, `font-weight` és a `background` rövidítés), `computed`, `ua.css` + `style_document`, `dump_styles`, `OwnStyleEngine`); a core-ban `style` (`Color`, `Display`, `ComputedStyle`, `StyleMap`) és `StyleEngine` trait; a `Block` stílust kap, a `BlockKind` csak `Paragraph`/`ListItem`; a `flatten` a `display` alapján dönt; `--css=sajat|profi` és `--stilus` kapcsoló; tag: `v0.1.6`. A 6. modulban a minifb helyére winit + softbuffer jön.
 
+## Graphify: kérdezd a gráfot, ne olvass végig mindent
+
+- A kódról (app, `src-tauri`, szkriptek) **előbb a gráftól kérdezz**: `graphify query "<kérdés>" --budget 800`, `graphify explain "<név>"`, `graphify path "A" "B"` (a bináris: `graphify` vagy `/home/user/.venvs/graphify/bin/graphify`). Csak azt a fájlrészt olvasd be utána, amire a válasz mutat.
+- A gráf (`graphify-out/`, nincs a gitben) minden kör végén magától frissül: a `.claude/settings.json` Stop hookja lefuttatja a `graphify update .`-et. Ha a gráf hiányzik (új konténer), előbb: `graphify update .`.
+- A leckék (`content/lessons/*.md`) nincsenek a kódgráfban: ott `grep`-pel keresd meg a kellő részt, és csak azt olvasd be.
+
 ## Az alkalmazás
 
 Vite + TypeScript, keretrendszer nélkül, hash-router (`#/lecke/01-03`). Tárolás: `localStorage` (`rozsda.v1`), exportálható. Asztali változat: Tauri 2 (`src-tauri`). Ha a fájlnévben benne van a `portable`, az adatok az exe melletti `Rozsda-adatok` mappába kerülnek.

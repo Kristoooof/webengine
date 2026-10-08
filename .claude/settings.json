@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && G=$(command -v graphify || echo /home/user/.venvs/graphify/bin/graphify); [ -x \"$G\" ] && \"$G\" update . >/dev/null 2>&1 || true",
+            "timeout": 180,
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}
