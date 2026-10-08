@@ -3093,3 +3093,57 @@ figure.code {
   max-width: 100%;
   min-width: 0;
 }
+
+/* A feladat adott kódja: összecsukható, csak olvasható */
+.ex-given {
+  margin: 12px 20px 0;
+  border: 1px solid var(--code-line);
+  border-radius: 12px;
+  background: var(--code-bg);
+  overflow: hidden;
+}
+.ex-given summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #d6d3d1;
+  cursor: pointer;
+  list-style: none;
+}
+.ex-given summary::-webkit-details-marker {
+  display: none;
+}
+.ex-given summary small {
+  font-weight: 500;
+  color: #a8a29e;
+}
+.ex-given-chev {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+}
+.ex-given[open] .ex-given-chev {
+  transform: rotate(180deg);
+}
+.ex-given pre {
+  margin: 0;
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--code-line);
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--code-text);
+  font-variant-ligatures: none;
+}
+@media (max-width: 860px) {
+  .ex-given {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .ex-given summary small {
+    display: none;
+  }
+}

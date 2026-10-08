@@ -54,6 +54,13 @@ const LANG_LABEL: Record<string, string> = {
 // A Rust-megoldásokat viszont be kell gépelni, mert attól marad meg.
 const COPYABLE = new Set(["bash", "powershell", "toml", "json", "html", "css"]);
 
+/** A feladathoz adott, közös kód (típusok, segédfüggvények): csak olvasásra, nem kell begépelni. */
+function givenHtml(given: string): string {
+  const code = given.trim();
+  if (!code) return "";
+  return `<details class="ex-given" open><summary>${icon("code", 15)}<span>Adott kód</span><small>a kódod látja, nem kell begépelned</small>${icon("down", 15, "ex-given-chev")}</summary><pre><code class="hljs language-rust">${hljs.highlight(code, { language: "rust" }).value}</code></pre></details>`;
+}
+
 export function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
@@ -292,6 +299,7 @@ export function renderLesson(src: string, lessonId: string): Rendered {
             <span class="ex-status ${solved ? "solved" : ""}">${solved ? `${icon("check", 13)}<span>Megoldva</span>` : ""}</span>
           </header>
           <div class="ex-prompt">${parse(spec.prompt)}</div>
+          ${givenHtml(spec.given)}
           <div class="ex-editor"><pre class="ex-fallback">${escapeHtml(saved?.code ?? spec.starter)}</pre></div>
           <div class="ex-toolbar">
             <button type="button" class="btn btn-primary ex-run">${icon("play", 15)}<span>Futtatás és ellenőrzés</span></button>
