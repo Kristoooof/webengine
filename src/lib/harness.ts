@@ -130,6 +130,9 @@ fn panic_message(p: Box<dyn std::any::Any + Send>) -> String {
     }
 }
 
+// Nem inline-olható, és a closure-ök a black_box mögött vannak: így a fordító egyiket sem
+// devirtualizálhatja, és a tanulóé és a mintáé ugyanazon az úton fut.
+#[inline(never)]
 fn measure(f: &mut Box<dyn FnMut()>) -> f64 {
     let mut iters: u64 = 1;
     loop {
@@ -164,8 +167,8 @@ fn main() {
         }
     }
     if all_ok && ${spec.benchExpr ? "true" : "false"} {
-        let mut u = user::__rozsda_bench();
-        let mut r = reference::__rozsda_bench();
+        let mut u = std::hint::black_box(user::__rozsda_bench());
+        let mut r = std::hint::black_box(reference::__rozsda_bench());
         let mut best_u = f64::MAX;
         let mut best_r = f64::MAX;
         let start = Instant::now();
